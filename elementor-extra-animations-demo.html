@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Demo for Elementor Extra Animations v1.0.0 — not part of the install, preview only. -->
+<meta charset="UTF-8">
+<title>How Elementor entrance animations trigger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14161B;
+    --surface:#1D2027;
+    --surface-2:#22262F;
+    --text:#ECEAE6;
+    --muted:#9A9CA6;
+    --accent:#FF3E6C;
+    --accent-soft:rgba(255,62,108,.14);
+    --line:#2B2E36;
+    --eea-ease-out: cubic-bezier(.22,1,.36,1);
+    --eea-ease-spring: cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',system-ui,sans-serif; margin:0 0 .4em;}
+  code, .mono{font-family:'JetBrains Mono',ui-monospace,monospace;}
+
+  .wrap{max-width:680px; margin:0 auto; padding:0 24px;}
+
+  /* ---- intro ---- */
+  .intro{padding:96px 0 64px;}
+  .intro h1{font-size:2rem; letter-spacing:-.01em;}
+  .intro p{color:var(--muted); font-size:1.02rem; max-width:56ch;}
+  .scroll-hint{margin-top:48px; color:var(--muted); font-size:.9rem; display:flex; align-items:center; gap:8px;}
+  .scroll-hint .arrow{animation: bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+  /* ---- spacer between demos, forces real scrolling ---- */
+  .spacer{height:38vh; display:flex; align-items:center; justify-content:center;}
+  .spacer span{color:var(--line); font-size:.85rem;}
+
+  /* ---- demo section ---- */
+  .demo{min-height:78vh; display:flex; flex-direction:column; justify-content:center; padding:40px 0;}
+  .demo .label{color:var(--accent); font-size:.85rem; font-weight:500; margin-bottom:6px;}
+  .demo h2{font-size:1.3rem; margin-bottom:.3em;}
+  .demo .desc{color:var(--muted); font-size:.92rem; margin-bottom:28px; max-width:52ch;}
+
+  .stage{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:36px;
+  }
+
+  /* the element actually being observed/animated */
+  .subject{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:22px 24px;
+    font-weight:500;
+  }
+
+  .readout{
+    margin-top:16px;
+    padding:12px 14px;
+    background:#101216;
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-size:.82rem;
+    color:#7EE2A8;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+  .readout .tag{color:#6C93FF;}
+  .readout .attr{color:#C9CDD6;}
+  .readout .val{color:#7EE2A8;}
+
+  /* ---- anatomy demo (section > column > widget) ---- */
+  .anatomy-section{
+    border:1px dashed #4A4E58;
+    border-radius:10px;
+    padding:20px;
+  }
+  .anatomy-tag{font-size:.72rem; color:var(--muted); margin-bottom:12px;}
+  .anatomy-column{
+    border:1px dashed #5A5E68;
+    border-radius:8px;
+    padding:16px;
+  }
+  .anatomy-column .anatomy-tag{margin-bottom:12px;}
+
+  /* ---- stagger demo ---- */
+  .stagger-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .stagger-row .subject{flex:1; min-width:150px; text-align:center;}
+
+  /* =========== real kit CSS, copied as-is =========== */
+  .elementor-element.elementor-invisible{ opacity:0; }
+  .elementor-element.animated{
+    animation-fill-mode: both;
+    will-change: transform, opacity, filter;
+  }
+  .elementor-element.animated.eea-rise{ animation-name:eea-rise; animation-timing-function:var(--eea-ease-out); animation-duration:.8s; }
+  .elementor-element.animated.eea-blur-in{ animation-name:eea-blur-in; animation-timing-function:var(--eea-ease-out); animation-duration:.8s; }
+  .elementor-element.animated.eea-scale-up{ animation-name:eea-scale-up; animation-timing-function:var(--eea-ease-out); animation-duration:.8s; }
+  .elementor-element.animated.eea-reveal-up{ animation-name:eea-reveal-up; animation-timing-function:var(--eea-ease-out); animation-duration:.8s; }
+  .elementor-element.animated.eea-drift-in{ animation-name:eea-drift-in; animation-timing-function:var(--eea-ease-out); animation-duration:.8s; }
+  .elementor-element.animated.eea-def-zoom{ animation-name:qz-def-zoom-stand-in; animation-timing-function:var(--eea-ease-spring); animation-duration:.7s; }
+  .elementor-element.animated.eea-def-slide{ animation-name:eea-def-slide-stand-in; animation-timing-function:var(--eea-ease-out); animation-duration:.7s; }
+
+  @keyframes eea-rise{ from{opacity:0; transform:translate3d(0,24px,0);} to{opacity:1; transform:translate3d(0,0,0);} }
+  @keyframes eea-blur-in{ from{opacity:0; filter:blur(8px);} to{opacity:1; filter:blur(0);} }
+  @keyframes eea-scale-up{ from{opacity:0; transform:scale3d(.92,.92,1);} to{opacity:1; transform:scale3d(1,1,1);} }
+  @keyframes eea-reveal-up{ from{opacity:0; clip-path:inset(100% 0 0 0); transform:translate3d(0,12px,0);} to{opacity:1; clip-path:inset(0 0 0 0); transform:translate3d(0,0,0);} }
+  @keyframes eea-drift-in{ from{opacity:0; transform:translate3d(-16px,8px,0);} to{opacity:1; transform:translate3d(0,0,0);} }
+  @keyframes qz-def-zoom-stand-in{ from{opacity:0; transform:scale3d(.94,.94,1);} to{opacity:1; transform:scale3d(1,1,1);} }
+  @keyframes eea-def-slide-stand-in{ from{opacity:0; transform:translate3d(0,40px,0);} to{opacity:1; transform:translate3d(0,0,0);} }
+
+  @media (prefers-reduced-motion: reduce){
+    .elementor-element.animated{ animation:none !important; }
+    .elementor-invisible{ opacity:1 !important; filter:none !important; transform:none !important; }
+  }
+
+  /* ---- log panel ---- */
+  .log{
+    position:fixed; right:16px; bottom:16px;
+    width:280px; max-width:calc(100vw - 32px);
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:10px; padding:14px 16px;
+    font-size:.78rem;
+    box-shadow:0 12px 32px rgba(0,0,0,.4);
+    z-index:10;
+  }
+  .log h3{font-size:.7rem; text-transform:none; color:var(--muted); font-weight:500; margin-bottom:8px; letter-spacing:.02em;}
+  .log ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; max-height:110px; overflow-y:auto;}
+  .log li{color:#8CE6A9; font-family:'JetBrains Mono',monospace; font-size:.74rem;}
+  .log li span{color:var(--muted);}
+  .log .empty{color:var(--muted); font-style:normal;}
+
+  .footer{padding:80px 0 120px; border-top:1px solid var(--line); margin-top:20px;}
+  .footer h2{font-size:1.15rem;}
+  .footer p{color:var(--muted); font-size:.94rem; max-width:54ch;}
+  .footer ul{color:var(--muted); font-size:.92rem; padding-left:1.2em;}
+  .footer li{margin-bottom:6px;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="intro">
+    <h1>When does the animation actually start?</h1>
+    <p>Scroll down. Each block below carries a real <code>class</code> attribute, watched by an Intersection Observer — the same mechanism Elementor's own frontend JS uses. Nothing plays until the element scrolls into view.</p>
+    <div class="scroll-hint"><span class="arrow">↓</span> keep scrolling</div>
+  </div>
+
+  <div class="spacer"><span>scroll</span></div>
+
+  <!-- ANATOMY: section > column > widget -->
+  <div class="demo" id="demo-anatomy">
+    <div class="label">Anatomy</div>
+    <h2>Section → Column → Widget</h2>
+    <p class="desc">Only the widget below has an Entrance Animation set. The section and column wrapping it are plain — they don't animate on their own just because the widget inside them does.</p>
+    <div class="stage">
+      <div class="anatomy-section">
+        <div class="anatomy-tag mono">&lt;section&gt; — no animation set</div>
+        <div class="anatomy-column">
+          <div class="anatomy-tag mono">&lt;column&gt; — no animation set</div>
+          <div class="subject elementor-element eea-rise elementor-invisible" data-name="Rise" data-class="eea-rise">Widget — Entrance Animation: Rise</div>
+        </div>
+      </div>
+      <div class="readout" data-readout-for="demo-anatomy"></div>
+    </div>
+  </div>
+
+  <div class="spacer"><span>scroll</span></div>
+
+  <div class="demo" id="demo-blur">
+    <div class="label">Blur In</div>
+    <h2>Focus pulls in as it enters view</h2>
+    <p class="desc">Opacity and blur resolve together — no movement.</p>
+    <div class="stage">
+      <div class="subject elementor-element eea-blur-in elementor-invisible" data-name="Blur In" data-class="eea-blur-in">Blur In</div>
+      <div class="readout" data-readout-for="demo-blur"></div>
+    </div>
+  </div>
+
+  <div class="spacer"><span>scroll</span></div>
+
+  <div class="demo" id="demo-scale">
+    <div class="label">Scale Up</div>
+    <h2>A small pop from 92%</h2>
+    <p class="desc">No blur, no offset — scale alone carries it.</p>
+    <div class="stage">
+      <div class="subject elementor-element eea-scale-up elementor-invisible" data-name="Scale Up" data-class="eea-scale-up">Scale Up</div>
+      <div class="readout" data-readout-for="demo-scale"></div>
+    </div>
+  </div>
+
+  <div class="spacer"><span>scroll</span></div>
+
+  <div class="demo" id="demo-reveal">
+    <div class="label">Reveal Up</div>
+    <h2>A clip-path wipe, not a fade</h2>
+    <p class="desc">The content is masked from below and unmasks upward.</p>
+    <div class="stage">
+      <div class="subject elementor-element eea-reveal-up elementor-invisible" data-name="Reveal Up" data-class="eea-reveal-up">Reveal Up</div>
+      <div class="readout" data-readout-for="demo-reveal"></div>
+    </div>
+  </div>
+
+  <div class="spacer"><span>scroll</span></div>
+
+  <div class="demo" id="demo-drift">
+    <div class="label">Drift In</div>
+    <h2>A diagonal, off-axis entrance</h2>
+    <p class="desc">Moves in from lower-left rather than straight up or sideways.</p>
+    <div class="stage">
+      <div class="subject elementor-element eea-drift-in elementor-invisible" data-name="Drift In" data-class="eea-drift-in">Drift In</div>
+      <div class="readout" data-readout-for="demo-drift"></div>
+    </div>
+  </div>
+
+  <div class="spacer"><span>scroll</span></div>
+
+  <!-- STAGGER: two widgets, one section, independent triggers + delay -->
+  <div class="demo" id="demo-stagger">
+    <div class="label">Independent triggers</div>
+    <h2>Two widgets, one section, two delays</h2>
+    <p class="desc">Both widgets sit in the same section, but each has its own Entrance Animation and its own Animation Delay — set with Elementor's native delay field, nothing custom. They fire independently the moment each one crosses into view.</p>
+    <div class="stage">
+      <div class="stagger-row">
+        <div class="subject elementor-element eea-def-zoom elementor-invisible" data-name="Zoom (0ms delay)" data-class="eea-def-zoom" style="animation-delay:0ms;">Widget A · 0ms delay</div>
+        <div class="subject elementor-element eea-def-slide elementor-invisible" data-name="Slide (250ms delay)" data-class="eea-def-slide" style="animation-delay:250ms;">Widget B · 250ms delay</div>
+      </div>
+      <div class="readout" data-readout-for="demo-stagger"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <h2>What actually happened above</h2>
+    <p>Every block above started at <code>opacity:0</code>, hidden by <code>elementor-invisible</code>. Nothing changed until the block's own boundary crossed into the viewport — at that point JS swapped in <code>animated</code>, which is the class our CSS keyframes are keyed on.</p>
+    <ul>
+      <li>The trigger belongs to the element with the animation set — a wrapping section doesn't inherit it from a widget inside it.</li>
+      <li>By default it plays once. Scrolling back up and down again in a live Elementor page won't replay it.</li>
+      <li>Duration and delay come entirely from Elementor's own native fields, which is why Widget B above waited an extra 250ms before starting.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="log">
+  <h3>Trigger log</h3>
+  <ul id="log-list"><li class="empty">— nothing triggered yet —</li></ul>
+</div>
+
+<script>
+  const logList = document.getElementById('log-list');
+  let logged = false;
+
+  function addLog(name){
+    if(!logged){ logList.innerHTML = ''; logged = true; }
+    const li = document.createElement('li');
+    const t = new Date().toLocaleTimeString([], {hour12:false});
+    li.innerHTML = `<span>${t}</span> ${name} triggered`;
+    logList.prepend(li);
+    while(logList.children.length > 5) logList.removeChild(logList.lastChild);
+  }
+
+  function renderReadout(el, animated){
+    const demo = el.closest('.demo');
+    if(!demo) return;
+    const box = demo.querySelector('.readout');
+    if(!box) return;
+    const cls = animated
+      ? `elementor-element ${el.dataset.class} animated`
+      : `elementor-element ${el.dataset.class} elementor-invisible`;
+    box.innerHTML = `<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="val">"${cls}"</span><span class="tag">&gt;</span>`;
+  }
+
+  const subjects = document.querySelectorAll('.subject');
+  subjects.forEach(el => renderReadout(el, false));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const el = entry.target;
+        el.classList.remove('elementor-invisible');
+        el.classList.add('animated');
+        renderReadout(el, true);
+        addLog(el.dataset.name);
+        observer.unobserve(el); // matches Elementor's default: fires once
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '0px 0px -10% 0px' });
+
+  subjects.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

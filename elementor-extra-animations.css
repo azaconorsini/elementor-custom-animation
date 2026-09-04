@@ -1,0 +1,317 @@
+/**
+ * Elementor Extra Animations — animations.
+ * Version: 1.0.0
+ * Install: Elementor > Custom Code > new snippet > wrap in <style>...</style>.
+ * Speed, duration and delay are Elementor's own native Motion Effects
+ * fields — nothing here overrides them. See README.md for how this works.
+ */
+
+:root {
+	--eea-ease-out: cubic-bezier( 0.22, 1, 0.36, 1 ); /* matches the widely-cited fade-up curve, e.g. prismic.io/blog/css-animation-examples */
+	--eea-ease-spring: cubic-bezier( 0.34, 1.56, 0.64, 1 );
+}
+
+.elementor-element.animated {
+	animation-fill-mode: both;
+	will-change: transform, opacity, filter;
+}
+
+/* ===========================================================================
+   Redesigned default (animate.css) entrance animations.
+   Same class names Elementor already outputs (fadeInUp, zoomIn, etc.), so
+   nothing changes in the Entrance Animation dropdown — each one now points
+   at a small, modern shape instead of animate.css's original keyframes.
+   Selector requires .elementor-element + .animated + the exact class
+   together — a combination only Elementor's own JS ever produces — so this
+   can never collide with animate.css used anywhere else on the site.
+   =========================================================================== */
+
+/* Fading — plain opacity + a noticeable move. Blur is intentionally
+   reserved for the dedicated "Blur In" Elementor Extra animation below,
+   not blended in here. */
+.elementor-element.animated.fadeIn {
+	animation-name: eea-def-fade !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.fadeInUp,
+.elementor-element.animated.fadeInUpBig {
+	animation-name: eea-def-fade-up !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.fadeInDown,
+.elementor-element.animated.fadeInDownBig {
+	animation-name: eea-def-fade-down !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.fadeInLeft,
+.elementor-element.animated.fadeInLeftBig {
+	animation-name: eea-def-fade-left !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.fadeInRight,
+.elementor-element.animated.fadeInRightBig {
+	animation-name: eea-def-fade-right !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+
+/* Zooming — scale is the signature; no blur, keeps it visually distinct
+   from Fading. */
+.elementor-element.animated.zoomIn {
+	animation-name: eea-def-zoom !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.zoomInUp {
+	animation-name: eea-def-zoom-up !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.zoomInDown {
+	animation-name: eea-def-zoom-down !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.zoomInLeft {
+	animation-name: eea-def-zoom-left !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.zoomInRight {
+	animation-name: eea-def-zoom-right !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+
+/* Sliding — the most kinetic of the "move" families: no blur, no scale,
+   noticeably more travel than Fading so the two read as distinct. */
+.elementor-element.animated.slideInUp {
+	animation-name: eea-def-slide-up !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.slideInDown {
+	animation-name: eea-def-slide-down !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.slideInLeft {
+	animation-name: eea-def-slide-left !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.slideInRight {
+	animation-name: eea-def-slide-right !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+
+/* Bouncing — reuses the Zooming shapes, paired with a back-out ("spring")
+   timing function instead of ease-out. The overshoot in the curve itself
+   reads as a bounce; no dedicated bounce keyframes needed. */
+.elementor-element.animated.bounceIn {
+	animation-name: eea-def-zoom !important;
+	animation-timing-function: var( --eea-ease-spring );
+}
+.elementor-element.animated.bounceInUp {
+	animation-name: eea-def-zoom-up !important;
+	animation-timing-function: var( --eea-ease-spring );
+}
+.elementor-element.animated.bounceInDown {
+	animation-name: eea-def-zoom-down !important;
+	animation-timing-function: var( --eea-ease-spring );
+}
+.elementor-element.animated.bounceInLeft {
+	animation-name: eea-def-zoom-left !important;
+	animation-timing-function: var( --eea-ease-spring );
+}
+.elementor-element.animated.bounceInRight {
+	animation-name: eea-def-zoom-right !important;
+	animation-timing-function: var( --eea-ease-spring );
+}
+
+/* Rotating — animate.css swings these up to 200deg; restrained to a small
+   tilt so it reads as refined rather than dated. All five origins share
+   one shape on purpose: five distinct multi-axis rotations is the
+   opposite of minimalist. */
+.elementor-element.animated.rotateIn,
+.elementor-element.animated.rotateInDownLeft,
+.elementor-element.animated.rotateInDownRight,
+.elementor-element.animated.rotateInUpLeft,
+.elementor-element.animated.rotateInUpRight {
+	animation-name: eea-def-rotate !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+
+/* Specials */
+.elementor-element.animated.rollIn {
+	animation-name: eea-def-roll !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+.elementor-element.animated.lightSpeedIn {
+	animation-name: eea-def-speed !important;
+	animation-timing-function: var( --eea-ease-out );
+}
+
+@keyframes eea-def-fade {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+@keyframes eea-def-fade-up {
+	from { opacity: 0; transform: translate3d( 0, 32px, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-fade-down {
+	from { opacity: 0; transform: translate3d( 0, -32px, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-fade-left {
+	from { opacity: 0; transform: translate3d( -32px, 0, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-fade-right {
+	from { opacity: 0; transform: translate3d( 32px, 0, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-zoom {
+	from { opacity: 0; transform: scale3d( .94, .94, 1 ); }
+	to   { opacity: 1; transform: scale3d( 1, 1, 1 ); }
+}
+@keyframes eea-def-zoom-up {
+	from { opacity: 0; transform: scale3d( .94, .94, 1 ) translate3d( 0, 8px, 0 ); }
+	to   { opacity: 1; transform: scale3d( 1, 1, 1 ) translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-zoom-down {
+	from { opacity: 0; transform: scale3d( .94, .94, 1 ) translate3d( 0, -8px, 0 ); }
+	to   { opacity: 1; transform: scale3d( 1, 1, 1 ) translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-zoom-left {
+	from { opacity: 0; transform: scale3d( .94, .94, 1 ) translate3d( -8px, 0, 0 ); }
+	to   { opacity: 1; transform: scale3d( 1, 1, 1 ) translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-zoom-right {
+	from { opacity: 0; transform: scale3d( .94, .94, 1 ) translate3d( 8px, 0, 0 ); }
+	to   { opacity: 1; transform: scale3d( 1, 1, 1 ) translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-slide-up {
+	from { opacity: 0; transform: translate3d( 0, 40px, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-slide-down {
+	from { opacity: 0; transform: translate3d( 0, -40px, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-slide-left {
+	from { opacity: 0; transform: translate3d( -40px, 0, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-slide-right {
+	from { opacity: 0; transform: translate3d( 40px, 0, 0 ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ); }
+}
+@keyframes eea-def-rotate {
+	from { opacity: 0; transform: rotate3d( 0, 0, 1, -8deg ) scale3d( .96, .96, 1 ); }
+	to   { opacity: 1; transform: rotate3d( 0, 0, 1, 0deg ) scale3d( 1, 1, 1 ); }
+}
+@keyframes eea-def-roll {
+	from { opacity: 0; transform: translate3d( -24px, 0, 0 ) rotate3d( 0, 0, 1, -8deg ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ) rotate3d( 0, 0, 1, 0deg ); }
+}
+@keyframes eea-def-speed {
+	from { opacity: 0; transform: translate3d( 24px, 0, 0 ) skewX( 8deg ); }
+	to   { opacity: 1; transform: translate3d( 0, 0, 0 ) skewX( 0deg ); }
+}
+
+/* ===========================================================================
+   The five Elementor Extra entrance animations.
+   =========================================================================== */
+
+.elementor-element.animated.eea-rise,
+.elementor-element.animated.eea-blur-in,
+.elementor-element.animated.eea-scale-up,
+.elementor-element.animated.eea-reveal-up,
+.elementor-element.animated.eea-drift-in {
+	animation-timing-function: var( --eea-ease-out );
+}
+
+.elementor-element.animated.eea-rise {
+	animation-name: eea-rise;
+}
+
+.elementor-element.animated.eea-blur-in {
+	animation-name: eea-blur-in;
+}
+
+.elementor-element.animated.eea-scale-up {
+	animation-name: eea-scale-up;
+}
+
+.elementor-element.animated.eea-reveal-up {
+	animation-name: eea-reveal-up;
+}
+
+.elementor-element.animated.eea-drift-in {
+	animation-name: eea-drift-in;
+}
+
+@keyframes eea-rise {
+	from {
+		opacity: 0;
+		transform: translate3d( 0, 24px, 0 );
+	}
+	to {
+		opacity: 1;
+		transform: translate3d( 0, 0, 0 );
+	}
+}
+
+@keyframes eea-blur-in {
+	from {
+		opacity: 0;
+		filter: blur( 8px );
+	}
+	to {
+		opacity: 1;
+		filter: blur( 0 );
+	}
+}
+
+@keyframes eea-scale-up {
+	from {
+		opacity: 0;
+		transform: scale3d( .92, .92, 1 );
+	}
+	to {
+		opacity: 1;
+		transform: scale3d( 1, 1, 1 );
+	}
+}
+
+@keyframes eea-reveal-up {
+	from {
+		opacity: 0;
+		clip-path: inset( 100% 0 0 0 );
+		transform: translate3d( 0, 12px, 0 );
+	}
+	to {
+		opacity: 1;
+		clip-path: inset( 0 0 0 0 );
+		transform: translate3d( 0, 0, 0 );
+	}
+}
+
+@keyframes eea-drift-in {
+	from {
+		opacity: 0;
+		transform: translate3d( -16px, 8px, 0 );
+	}
+	to {
+		opacity: 1;
+		transform: translate3d( 0, 0, 0 );
+	}
+}
+
+/* Respect "reduce motion" — Elementor doesn't check this itself. */
+
+@media ( prefers-reduced-motion: reduce ) {
+	.elementor-element.animated {
+		animation: none !important;
+	}
+
+	.elementor-invisible {
+		opacity: 1 !important;
+		visibility: visible !important;
+		filter: none !important;
+		transform: none !important;
+	}
+}
