@@ -102,9 +102,5 @@ with no orphans in either direction; all 30 stock classes and all 5
 
 ## Author
 
-Built by [Johan Azacon](https://www.linkedin.com/in/johanazacon/).
+Built by [Johan Azacon - LinkedIn](https://www.linkedin.com/in/johanazacon/).
 
-## License
-
-Add a license (MIT is a common choice for a kit like this) before making
-the repo public — none is included yet.
